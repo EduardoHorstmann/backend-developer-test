@@ -1,0 +1,12 @@
+#Rodar a aplicação executar no terminal docker compose up -d
+#Parar o container docker compose stop
+version: '3'
+services:
+  domainbank:
+    image: bitnami/postgresql
+    ports: 
+      - 5432:5432
+    environment:
+      - POSTGRESQL_USERNAME=domainbank
+      - POSTGRESQL_PASSWORD=docker
+      - POSTGRESQL_DATABASE=plooral

@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Define o tipo ENUM
+enum JobStatus {
+  draft
+  published
+  archived
+  rejected
+}
+
+// Define o modelo da tabela Company
+model companies {
+  id        String   @id @default(uuid()) @map(name: "id")
+  name      String   @unique
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @default(now()) @map(name: "updated_at")
+  jobs      jobs[]   @relation("CompanyToJob")
+}
+
+// Define o modelo da tabela Job
+model jobs {
+  id          String    @id @default(uuid()) @map(name: "id")
+  companyId   String
+  company     companies @relation("CompanyToJob", fields: [companyId], references: [id])
+  title       String
+  description String
+  location    String
+  notes       String?
+  status      JobStatus @default(draft)
+  createdAt   DateTime  @default(now()) @map(name: "created_at")
+  updatedAt   DateTime  @default(now()) @map(name: "updated_at")
+
+  // Criação dos index
+  @@index([companyId], name: "company_index")
+  @@index([status], name: "status_index")
+}
